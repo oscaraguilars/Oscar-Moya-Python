@@ -60,7 +60,7 @@ Puedes revisar y ajustar los valores en `.env` si lo necesitas.
 python3 app.py
 ```
 
-Abre [http://localhost:5000](http://localhost:5000). Verás "No hay alumnos
+Abre [http://localhost:5001](http://localhost:5001). Verás "No hay alumnos
 registrados." porque todavía no hay ninguna base de datos disponible — y no
 un error 500, que es justo el comportamiento esperado en este punto.
 
@@ -73,13 +73,20 @@ con Docker Compose:
 docker compose up --build
 ```
 
-Esto crea el contenedor de PostgreSQL, carga los datos iniciales de
-[`database_students.sql`](database_students.sql) y arranca la app conectada a
-esa base de datos. Fíjate que en `docker-compose.yml` las mismas variables
-(`DB_HOST`, `DB_USER`, etc.) se definen directamente ahí en vez de en un
-`.env` — es Docker Compose quien se las entrega al contenedor. Ahora en
-[http://localhost:5000](http://localhost:5000) sí se verá el listado de
-alumnos.
+Esto crea los contenedores de la app y PostgreSQL, carga los datos iniciales de
+[`database_students.sql`](database_students.sql) al inicializar la base de
+datos y arranca la app conectada a ella. Las variables `DB_HOST`, `DB_USER`,
+etc. se definen en `compose.yaml`; dentro de la red de Compose, la app encuentra
+PostgreSQL con el nombre de servicio `db`. En
+[http://localhost:5001](http://localhost:5001) se verá el listado de alumnos.
+
+El SQL de inicialización se ejecuta solo cuando se crea por primera vez el
+volumen de datos. Para borrar la base local y volver a inicializarla desde cero:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
 
 Para detener y eliminar los contenedores:
 
